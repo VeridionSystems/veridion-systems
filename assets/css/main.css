@@ -180,48 +180,8 @@ ul { list-style: none; padding: 0; margin: 0; }
   transition: opacity .18s ease, transform .18s ease, visibility 0s linear 0s;
 }
 
-/* Mobile */
-.mobile-toggle {
-  display: none;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,.20);
-  color: white;
-  padding: 9px 13px;
-  border-radius: 9px;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-@media (max-width: 960px) {
-  .nav-divider { display: none; }
-  .nav {
-    display: none;
-    position: fixed;
-    inset: var(--hdr-h) 0 0 0;
-    background: rgba(11,31,42,.98);
-    flex-direction: column;
-    align-items: stretch;
-    padding: 16px;
-    gap: 4px;
-    overflow-y: auto;
-    z-index: 99;
-  }
-  .nav.open { display: flex; }
-  .nav > a, .nav .dropdown > a { font-size: 15px; padding: 12px 14px; }
-  .dropdown-panel {
-    position: static;
-    visibility: visible; opacity: 1; pointer-events: auto;
-    transform: none; transition: none;
-    background: transparent; border: 0; box-shadow: none;
-    padding: 0 0 8px 14px;
-  }
-  .dropdown-panel::before { display: none; }
-  .dropdown-panel a { color: rgba(255,255,255,.80); font-size: 14px; }
-  .dropdown-panel a:hover { background: rgba(255,255,255,.07); color: white; }
-  .nav .cta-btn { margin: 8px 0 0; text-align: center; }
-  .mobile-toggle { display: block; }
-}
+/* Mobile toggle — hidden on desktop, shown via media query below */
+.mobile-toggle { display: none; }
 
 /* =============================================
    HERO (Home)
@@ -1476,5 +1436,30 @@ textarea { resize: vertical; }
     grid-template-columns: 1fr !important;
     gap: 24px !important;
   }
+}
+
+/* ── CONTACT PAGE: form + sidebar ── */
+@media (max-width: 760px) {
+  [style*="grid-template-columns:1fr 380px"],
+  [style*="grid-template-columns: 1fr 380px"] {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+}
+
+/* ── TABLET (760px–960px) general polish ── */
+@media (max-width: 960px) and (min-width: 641px) {
+  .hero-inner { padding: 60px 0 52px; }
+  .page-hero-inner { padding: 52px 0 44px; }
+  .cta-band { gap: 24px; }
+}
+
+/* ── Small phone edge cases ── */
+@media (max-width: 400px) {
+  .brand-name strong { font-size: 13.5px; }
+  .brand-name span { display: none; }
+  .page-hero h1 { font-size: clamp(24px, 7vw, 30px); }
+  .hero h1 { font-size: clamp(26px, 9vw, 34px); }
+  .btn { font-size: 14px; padding: 12px 18px; }
 }
 
