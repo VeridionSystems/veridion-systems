@@ -886,9 +886,6 @@ details[open] .toggle-icon { transform: rotate(45deg); }
   .principles-grid .principle-item:nth-child(4),
   .principles-grid .principle-item:nth-child(5) { border-top: 1px solid var(--border); }
 }
-@media (max-width: 640px) {
-  .principles-grid { grid-template-columns: 1fr 1fr; }
-}
 .principle-item {
   padding: 24px 20px;
   background: white;
@@ -907,11 +904,40 @@ details[open] .toggle-icon { transform: rotate(45deg); }
 .principle-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
 .principle-item p { font-size: 12.5px; color: var(--muted); }
 
+/* ── Principles: 2×2 + centered 5th on tablet & mobile ── */
 @media (max-width: 760px) {
-  .principles-grid { grid-template-columns: 1fr 1fr; }
-  .principle-item:nth-child(even) { border-right: 0; }
+  .principles-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  /* Reset all borders first */
+  .principle-item {
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+  /* Restore right border on left-column items (odd), except 5th */
+  .principle-item:nth-child(odd):not(:nth-child(5)) {
+    border-right: 1px solid var(--border) !important;
+  }
+  /* Remove bottom border from 3rd and 4th (row above the last) */
+  .principle-item:nth-child(3),
+  .principle-item:nth-child(4) {
+    border-bottom: 1px solid var(--border) !important;
+  }
+  /* 5th item: span both columns, center it, no bottom border */
+  .principle-item:nth-child(5) {
+    grid-column: 1 / -1 !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    border-top: 1px solid var(--border) !important;
+    max-width: 280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  /* Remove border-top from row 1 items */
   .principle-item:nth-child(1),
-  .principle-item:nth-child(2) { border-bottom: 1px solid var(--border); }
+  .principle-item:nth-child(2) {
+    border-top: 0 !important;
+  }
 }
 
 /* =============================================
@@ -1390,18 +1416,7 @@ textarea { resize: vertical; }
   }
 }
 
-/* ── PRINCIPLES GRID ── */
-@media (max-width: 760px) {
-  .principles-grid { grid-template-columns: 1fr 1fr !important; }
-  .principle-item { border-right: 0 !important; border-bottom: 1px solid var(--border); }
-  .principle-item:nth-child(odd) { border-right: 1px solid var(--border) !important; }
-  .principle-item:last-child,
-  .principle-item:nth-last-child(2):nth-child(odd) { border-bottom: 0; }
-}
-@media (max-width: 380px) {
-  .principles-grid { grid-template-columns: 1fr !important; }
-  .principle-item { border-right: 0 !important; }
-}
+/* ── PRINCIPLES GRID — handled above in component block ── */
 
 /* ── PHASE DETAIL (how-we-work) ── */
 @media (max-width: 760px) {
@@ -1444,6 +1459,25 @@ textarea { resize: vertical; }
   .cta-band { grid-template-columns: 1fr; padding: 32px 24px; }
   .cta-band h2 { font-size: 22px; }
   .cta-band-actions { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+}
+
+/* ── HOME CTA (inline-style grid with button + email aside) ── */
+@media (max-width: 760px) {
+  [style*="grid-template-columns:1fr auto"],
+  [style*="grid-template-columns: 1fr auto"] {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  /* Make the actions div left-aligned and row-direction on mobile */
+  [style*="grid-template-columns:1fr auto"] > [style*="flex-direction:column"],
+  [style*="grid-template-columns:1fr auto"] > [style*="flex-direction: column"],
+  [style*="grid-template-columns: 1fr auto"] > [style*="flex-direction:column"],
+  [style*="grid-template-columns: 1fr auto"] > [style*="flex-direction: column"] {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 14px !important;
+  }
 }
 
 /* ── CONTACT FORM ── */
