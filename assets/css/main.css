@@ -872,6 +872,7 @@ details[open] .toggle-icon { transform: rotate(45deg); }
 /* =============================================
    PRINCIPLES
    ============================================= */
+/* Desktop: 5 columns in a row */
 .principles-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -880,6 +881,7 @@ details[open] .toggle-icon { transform: rotate(45deg); }
   overflow: hidden;
   border: 1px solid var(--border);
 }
+/* Tablet ~640–960px: 3 columns */
 @media (max-width: 960px) {
   .principles-grid { grid-template-columns: repeat(3, 1fr); }
   .principles-grid .principle-item:nth-child(3) { border-right: 0; }
@@ -904,39 +906,45 @@ details[open] .toggle-icon { transform: rotate(45deg); }
 .principle-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
 .principle-item p { font-size: 12.5px; color: var(--muted); }
 
-/* ── Principles: 2×2 + centered 5th on tablet & mobile ── */
+/* ── Mobile/tablet ≤760px: 2×2 grid + 5th item centered below ──
+   Strategy: switch grid to 1 col, use flexbox-style layout via
+   a wrapper approach. Since we can't add HTML, we use a 2-col grid
+   but wrap the 5th in its own full-width row using grid placement,
+   and remove overflow:hidden so the spanning item isn't clipped.    */
 @media (max-width: 760px) {
   .principles-grid {
     grid-template-columns: 1fr 1fr !important;
+    overflow: visible !important;
+    /* Re-apply the border as a box-shadow so it still looks bordered
+       even without overflow:hidden rounding the corners */
+    border: none !important;
+    box-shadow: 0 0 0 1px var(--border);
+    border-radius: var(--radius) !important;
   }
-  /* Reset all borders first */
+  /* All items: use box borders */
   .principle-item {
-    border-right: 0 !important;
-    border-bottom: 1px solid var(--border) !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    border-top: none !important;
+    box-shadow:
+      1px 0 0 0 var(--border),   /* right line */
+      0 1px 0 0 var(--border);   /* bottom line */
   }
-  /* Restore right border on left-column items (odd), except 5th */
-  .principle-item:nth-child(odd):not(:nth-child(5)) {
-    border-right: 1px solid var(--border) !important;
+  /* Right column items: no right line (already at grid edge) */
+  .principle-item:nth-child(even) {
+    box-shadow: 0 1px 0 0 var(--border);
   }
-  /* Remove bottom border from 3rd and 4th (row above the last) */
-  .principle-item:nth-child(3),
-  .principle-item:nth-child(4) {
-    border-bottom: 1px solid var(--border) !important;
-  }
-  /* 5th item: span both columns, center it, no bottom border */
+  /* 5th item: span both columns, centered */
   .principle-item:nth-child(5) {
     grid-column: 1 / -1 !important;
-    border-right: 0 !important;
-    border-bottom: 0 !important;
+    /* Center it at ~half width */
+    width: 50% !important;
+    margin: 0 auto !important;
+    /* No bottom line, no right line */
+    box-shadow: none !important;
     border-top: 1px solid var(--border) !important;
-    max-width: 280px;
-    margin: 0 auto;
-    width: 100%;
-  }
-  /* Remove border-top from row 1 items */
-  .principle-item:nth-child(1),
-  .principle-item:nth-child(2) {
-    border-top: 0 !important;
+    /* Round bottom corners to match container */
+    border-radius: 0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px) !important;
   }
 }
 
@@ -1416,7 +1424,7 @@ textarea { resize: vertical; }
   }
 }
 
-/* ── PRINCIPLES GRID — handled above in component block ── */
+
 
 /* ── PHASE DETAIL (how-we-work) ── */
 @media (max-width: 760px) {
@@ -1461,18 +1469,14 @@ textarea { resize: vertical; }
   .cta-band-actions { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
 }
 
-/* ── HOME CTA (inline-style grid with button + email aside) ── */
+/* ── HOME PAGE CTA ("Design clarity into your operations") ── */
 @media (max-width: 760px) {
-  [style*="grid-template-columns:1fr auto"],
-  [style*="grid-template-columns: 1fr auto"] {
+  .home-cta-grid {
     grid-template-columns: 1fr !important;
     gap: 20px !important;
+    padding: 32px 28px !important;
   }
-  /* Make the actions div left-aligned and row-direction on mobile */
-  [style*="grid-template-columns:1fr auto"] > [style*="flex-direction:column"],
-  [style*="grid-template-columns:1fr auto"] > [style*="flex-direction: column"],
-  [style*="grid-template-columns: 1fr auto"] > [style*="flex-direction:column"],
-  [style*="grid-template-columns: 1fr auto"] > [style*="flex-direction: column"] {
+  .home-cta-actions {
     flex-direction: row !important;
     flex-wrap: wrap !important;
     align-items: center !important;
