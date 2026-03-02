@@ -180,7 +180,7 @@ ul { list-style: none; padding: 0; margin: 0; }
   transition: opacity .18s ease, transform .18s ease, visibility 0s linear 0s;
 }
 
-/* Mobile toggle — hidden on desktop, shown via media query below */
+/* Mobile toggle — hidden on desktop */
 .mobile-toggle { display: none; }
 
 /* =============================================
@@ -872,7 +872,6 @@ details[open] .toggle-icon { transform: rotate(45deg); }
 /* =============================================
    PRINCIPLES
    ============================================= */
-/* Desktop: 5 columns in a row */
 .principles-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -881,12 +880,14 @@ details[open] .toggle-icon { transform: rotate(45deg); }
   overflow: hidden;
   border: 1px solid var(--border);
 }
-/* Tablet ~640–960px: 3 columns */
 @media (max-width: 960px) {
   .principles-grid { grid-template-columns: repeat(3, 1fr); }
   .principles-grid .principle-item:nth-child(3) { border-right: 0; }
   .principles-grid .principle-item:nth-child(4),
   .principles-grid .principle-item:nth-child(5) { border-top: 1px solid var(--border); }
+}
+@media (max-width: 640px) {
+  .principles-grid { grid-template-columns: 1fr 1fr; }
 }
 .principle-item {
   padding: 24px 20px;
@@ -906,45 +907,21 @@ details[open] .toggle-icon { transform: rotate(45deg); }
 .principle-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
 .principle-item p { font-size: 12.5px; color: var(--muted); }
 
-/* ── Mobile/tablet ≤760px: 2×2 grid + 5th item centered below ──
-   Strategy: switch grid to 1 col, use flexbox-style layout via
-   a wrapper approach. Since we can't add HTML, we use a 2-col grid
-   but wrap the 5th in its own full-width row using grid placement,
-   and remove overflow:hidden so the spanning item isn't clipped.    */
 @media (max-width: 760px) {
-  .principles-grid {
-    grid-template-columns: 1fr 1fr !important;
-    overflow: visible !important;
-    /* Re-apply the border as a box-shadow so it still looks bordered
-       even without overflow:hidden rounding the corners */
-    border: none !important;
-    box-shadow: 0 0 0 1px var(--border);
-    border-radius: var(--radius) !important;
-  }
-  /* All items: use box borders */
-  .principle-item {
-    border-right: none !important;
-    border-bottom: none !important;
-    border-top: none !important;
-    box-shadow:
-      1px 0 0 0 var(--border),   /* right line */
-      0 1px 0 0 var(--border);   /* bottom line */
-  }
-  /* Right column items: no right line (already at grid edge) */
-  .principle-item:nth-child(even) {
-    box-shadow: 0 1px 0 0 var(--border);
-  }
-  /* 5th item: span both columns, centered */
-  .principle-item:nth-child(5) {
-    grid-column: 1 / -1 !important;
-    /* Center it at ~half width */
-    width: 50% !important;
-    margin: 0 auto !important;
-    /* No bottom line, no right line */
-    box-shadow: none !important;
-    border-top: 1px solid var(--border) !important;
-    /* Round bottom corners to match container */
-    border-radius: 0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px) !important;
+  .principles-grid { grid-template-columns: 1fr 1fr; }
+  .principle-item:nth-child(even) { border-right: 0; }
+  .principle-item:nth-child(1),
+  .principle-item:nth-child(2),
+  .principle-item:nth-child(3),
+  .principle-item:nth-child(4) { border-bottom: 1px solid var(--border); }
+  /* 5th item: span full width and center */
+  .principle-item--last {
+    grid-column: 1 / -1;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 
@@ -1265,65 +1242,35 @@ textarea { resize: vertical; }
   .nav {
     display: none;
     position: fixed;
-    top: var(--hdr-h);
-    left: 0;
-    right: 0;
-    height: calc(100vh - var(--hdr-h));
-    background: rgba(10,25,38,.98);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    top: var(--hdr-h); left: 0; right: 0; bottom: 0;
+    background: rgba(10,25,38,.97);
+    backdrop-filter: blur(16px);
     flex-direction: column;
     align-items: stretch;
-    padding: 8px 16px 60px;
+    padding: 10px 16px 40px;
     gap: 0;
     overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
     z-index: 999;
-    border-top: 1px solid rgba(255,255,255,.10);
+    border-top: 1px solid rgba(255,255,255,.08);
   }
   .nav.open { display: flex; }
 
   /* Nav links — large tap targets */
   .nav > a,
   .nav .dropdown > a {
-    display: block;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
-    padding: 16px 18px;
+    padding: 15px 16px;
     border-radius: 10px;
-    color: rgba(255,255,255,.90);
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: rgba(255,255,255,.88);
+    border-bottom: 1px solid rgba(255,255,255,.07);
   }
   .nav > a:last-of-type { border-bottom: 0; }
-  .nav > a:active,
-  .nav > a[aria-current="page"] { color: var(--cyan-light); background: rgba(255,255,255,.06); }
+  .nav > a:hover,
+  .nav > a[aria-current="page"] { color: var(--cyan-light); background: rgba(255,255,255,.05); }
 
-  /* Services dropdown — collapsible on mobile */
+  /* Services sub-links — always visible, indented */
   .dropdown { position: static; }
-  .dropdown > a {
-    display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-  }
-  /* Chevron indicator — appended via CSS so no HTML changes needed */
-  .dropdown > a::after {
-    content: '›';
-    font-size: 20px;
-    line-height: 1;
-    opacity: .6;
-    transform: rotate(90deg);
-    transition: transform .2s;
-    flex-shrink: 0;
-    margin-left: 8px;
-  }
-  .dropdown.open > a::after {
-    transform: rotate(270deg);
-    opacity: 1;
-  }
   .dropdown-panel {
     position: static !important;
     visibility: visible !important;
@@ -1331,40 +1278,32 @@ textarea { resize: vertical; }
     pointer-events: auto !important;
     transform: none !important;
     transition: none !important;
-    display: none !important;
+    display: block !important;
     background: rgba(255,255,255,.05);
     border: 0;
-    border-left: 2px solid rgba(47,164,169,.40);
-    border-radius: 0 10px 10px 0;
+    border-radius: 10px;
     box-shadow: none;
-    padding: 4px 6px 6px 6px;
-    margin: 0 0 6px 18px;
+    padding: 4px 6px 8px 8px;
+    margin: 0 0 4px 8px;
   }
-  /* Show sub-menu when parent dropdown has .open class */
-  .dropdown.open .dropdown-panel { display: block !important; }
   .dropdown-panel::before { display: none !important; }
   .dropdown-panel a {
-    display: block;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 14.5px;
     color: rgba(255,255,255,.72);
-    padding: 12px 14px;
+    padding: 11px 14px;
     border-radius: 8px;
     border-bottom: 0;
-    white-space: normal;
-    line-height: 1.4;
   }
-  .dropdown-panel a:active { background: rgba(255,255,255,.08); color: white; }
+  .dropdown-panel a:hover { background: rgba(255,255,255,.08); color: white; }
 
   /* CTA button */
   .nav .cta-btn {
-    display: block !important;
-    margin: 16px 0 0 !important;
-    padding: 17px 20px !important;
-    font-size: 16px !important;
+    margin: 14px 0 0 !important;
+    padding: 15px 20px !important;
+    font-size: 15px !important;
     border-radius: 12px !important;
-    text-align: center !important;
-    white-space: nowrap;
+    text-align: center;
+    justify-content: center;
   }
 }
 
@@ -1424,7 +1363,18 @@ textarea { resize: vertical; }
   }
 }
 
-
+/* ── PRINCIPLES GRID ── */
+@media (max-width: 760px) {
+  .principles-grid { grid-template-columns: 1fr 1fr !important; }
+  .principle-item { border-right: 0 !important; border-bottom: 1px solid var(--border); }
+  .principle-item:nth-child(odd) { border-right: 1px solid var(--border) !important; }
+  .principle-item:last-child,
+  .principle-item:nth-last-child(2):nth-child(odd) { border-bottom: 0; }
+}
+@media (max-width: 380px) {
+  .principles-grid { grid-template-columns: 1fr !important; }
+  .principle-item { border-right: 0 !important; }
+}
 
 /* ── PHASE DETAIL (how-we-work) ── */
 @media (max-width: 760px) {
@@ -1469,17 +1419,17 @@ textarea { resize: vertical; }
   .cta-band-actions { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
 }
 
-/* ── HOME PAGE CTA ("Design clarity into your operations") ── */
+/* ── HOME PAGE CTA ── */
 @media (max-width: 760px) {
   .home-cta-grid {
     grid-template-columns: 1fr !important;
     gap: 20px !important;
-    padding: 32px 28px !important;
+    padding: 28px 24px !important;
   }
   .home-cta-actions {
     flex-direction: row !important;
-    flex-wrap: wrap !important;
     align-items: center !important;
+    flex-wrap: wrap !important;
     gap: 14px !important;
   }
 }
@@ -1512,30 +1462,5 @@ textarea { resize: vertical; }
     grid-template-columns: 1fr !important;
     gap: 24px !important;
   }
-}
-
-/* ── CONTACT PAGE: form + sidebar ── */
-@media (max-width: 760px) {
-  [style*="grid-template-columns:1fr 380px"],
-  [style*="grid-template-columns: 1fr 380px"] {
-    grid-template-columns: 1fr !important;
-    gap: 32px !important;
-  }
-}
-
-/* ── TABLET (760px–960px) general polish ── */
-@media (max-width: 960px) and (min-width: 641px) {
-  .hero-inner { padding: 60px 0 52px; }
-  .page-hero-inner { padding: 52px 0 44px; }
-  .cta-band { gap: 24px; }
-}
-
-/* ── Small phone edge cases ── */
-@media (max-width: 400px) {
-  .brand-name strong { font-size: 13.5px; }
-  .brand-name span { display: none; }
-  .page-hero h1 { font-size: clamp(24px, 7vw, 30px); }
-  .hero h1 { font-size: clamp(26px, 9vw, 34px); }
-  .btn { font-size: 14px; padding: 12px 18px; }
 }
 
